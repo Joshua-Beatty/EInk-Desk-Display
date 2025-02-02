@@ -4,8 +4,9 @@ import time
 
 epd = EPD()
 
-print("init and Clear")
+print("init ")
 epd.init()
+print("clear")
 epd.Clear()
 
 
