@@ -26,6 +26,7 @@ num = 0
 while (True):
     draw.rectangle((31, 150, 130, 170), fill = 255)
     draw.text((31, 150), time.strftime('%H:%M:%S'), fill = 0)
+    Himage = ImageOps.invert(Himage)
     epd.display_Partial(epd.getbuffer(Himage),0, 0, epd.width, epd.height)
     num = num + 1
     if(num == 10):
