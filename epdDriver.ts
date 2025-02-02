@@ -49,25 +49,38 @@ class EPD {
         await this.sendCommand(0x06);
         console.log("sendData(Buffer.from([0x17, 0x17, 0x28, 0x17])")
         await this.sendData(Buffer.from([0x17, 0x17, 0x28, 0x17]));
+        console.log(1)
         
         await this.sendCommand(0x01);
+        console.log(2)
         await this.sendData(Buffer.from([0x07, 0x07, 0x28, 0x17]));
+        console.log(3)
         
         await this.sendCommand(0x04);
+        console.log(4)
         await this.config.delayMs(100);
+        console.log(5)
         await this.readBusy();
+        console.log(6)
 
         await this.sendCommand(0x00);
+        console.log(7)
         await this.sendData(Buffer.from([0x1F]));
+        console.log(8)
 
         await this.sendCommand(0x61);
         await this.sendData(Buffer.from([0x03, 0x20, 0x01, 0xE0]));
+        console.log(9)
+
 
         await this.sendCommand(0x50);
         await this.sendData(Buffer.from([0x10, 0x07]));
+        console.log(10)
+
 
         await this.sendCommand(0x60);
         await this.sendData(Buffer.from([0x22]));
+        console.log(11)
     }
 
     async clear(): Promise<void> {
