@@ -35,13 +35,19 @@ async function main() {
     await epd.clear();
     console.log("Display cleared");
 
-    await epd.draw("./test1.png");
+    await epd.draw("./test3.png");
     console.log("Full image drawn");
 
-    await epd.drawPartial("./test2.png", 0, 0, 800, 480);
-    console.log("Partial update completed");
 
     let count = 0;
+    while(count < 15){
+        count++
+        await waitUntilNextSecond()
+        await drawTime(epd);
+    }
+    await epd.draw("./dither_it_test3v2.png");
+    console.log("Partial update completed");
+    count = 0;
     while(count < 15){
         count++
         await waitUntilNextSecond()
