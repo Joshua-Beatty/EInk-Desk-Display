@@ -19,7 +19,7 @@ class EPDConfig {
         this.gpioRst = new Gpio(this.RST_PIN, 'out');
         this.gpioDc = new Gpio(this.DC_PIN, 'out');
         this.gpioPwr = new Gpio(this.PWR_PIN, 'out');
-        this.gpioBusy = new Gpio(this.BUSY_PIN, 'in');
+        this.gpioBusy = new Gpio(this.BUSY_PIN, 'in', "none", {activeLow: true});
 
         // Initialize SPI
         this.spiDevice = spi.openSync(0, 0);
