@@ -28,8 +28,7 @@ class EPDConfig {
 
     private configureSPI() {
         this.spiDevice.setOptionsSync({
-            mode: 0,
-            maxSpeedHz: 4000000
+            mode: 0
         });
     }
 
@@ -68,7 +67,6 @@ class EPDConfig {
                 this.spiDevice.transfer([{
                     byteLength: chunk.length,
                     sendBuffer: chunk,
-                    speedHz: 4000000
                 }], (err) => {
                     if (err) reject(err);
                     else resolve();
