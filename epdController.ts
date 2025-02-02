@@ -18,6 +18,9 @@ class EPDController {
   private pending = new Map<string, ResponseHandler>();
 
   constructor() {
+    if(process.platform.includes("win")){
+        return;
+    }
     this.process = spawn("python3", ["epd_handler.py"]);
 
     this.process.stdout?.on("data", (data: Buffer) => {
@@ -46,6 +49,9 @@ class EPDController {
   }
 
   private sendCommand<T extends object>(command: T): Promise<CommandResponse> {
+    if(process.platform.includes("win")){
+        return {} as any;
+    }
     return new Promise((resolve, reject) => {
       const id = uuidv4();
       const payload = { ...command, id };
@@ -88,6 +94,9 @@ class EPDController {
   }
 
   public destroy(): void {
+    if(process.platform.includes("win")){
+        return;
+    }
     this.process.kill();
     this.pending.clear();
   }

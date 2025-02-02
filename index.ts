@@ -17,20 +17,19 @@ async function main() {
 
     const image = sharp("./test2.png");
 
+    const time = new Date().toLocaleString().split(", ")[1];
     await image
       .composite([
         {
-            
-          input: {
-            
-            text: {
-              text: `<span foreground="black" background="white">${new Date().toLocaleString().split(", ")[1]}</span>`,
-              width: 450,
-              height: 150,
-            },
-          },
+          input: Buffer.from(
+            `<svg>
+                <rect x="0" y="0" width="450" height="150" fill="#fff" />
+                <text x="430" y="130" text-anchor="end" font-size="74" fill="#000">${time}</text>
+            </svg>`
+          ),
           top: 480 - 150,
           left: 800 - 450,
+          gravity: "southeast"
         },
       ])
       .toFile("./test.png");
