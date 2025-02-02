@@ -37,22 +37,12 @@ async function main() {
 
     await epd.draw("./test3.png");
     console.log("Full image drawn");
-
-
-    let count = 0;
-    while(count < 15){
-        count++
-        await waitUntilNextSecond()
-        await drawTime(epd);
-    }
-    await epd.draw("./dither_it_test3v2.png");
-    console.log("Partial update completed");
-    count = 0;
-    while(count < 15){
-        count++
-        await waitUntilNextSecond()
-        await drawTime(epd);
-    }
+//     let count = 0;
+//     while(count < 15){
+//         count++
+//         await waitUntilNextSecond()
+//         await drawTime(epd);
+//     }
 
     await epd.sleep();
     console.log("Display sleeping");
