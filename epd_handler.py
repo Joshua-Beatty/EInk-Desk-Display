@@ -1,13 +1,13 @@
 import sys
 import json
-from epd7in5_V2 import EPD
+from epd7in5_V2 import EPD, epdconfig
 from PIL import Image
 import signal
 
 epd = EPD()
 
 def signal_handler(sig, frame):
-    epd.epdconfig.module_exit(cleanup=True)
+    epdconfig.module_exit(cleanup=True)
     sys.exit(0)
 
 signal.signal(signal.SIGINT, signal_handler)
