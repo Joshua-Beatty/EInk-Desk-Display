@@ -65,7 +65,6 @@ class EPDConfig {
             this.spiDevice.transfer([{
                 byteLength: data.length,
                 sendBuffer: data,
-                receiveBuffer: Buffer.alloc(data.length),
                 speedHz: 4000000
             }], (err) => {
                 if(err) reject(err);
