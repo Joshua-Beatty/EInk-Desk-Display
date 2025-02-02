@@ -87,7 +87,6 @@ class EPD:
         self.send_command(0x71)
         busy = epdconfig.digital_read(self.busy_pin)
         while(busy == 0):
-            print(busy)
             self.send_command(0x71)
             busy = epdconfig.digital_read(self.busy_pin)
         epdconfig.delay_ms(20)

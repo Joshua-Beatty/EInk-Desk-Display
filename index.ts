@@ -17,11 +17,11 @@ function sendCommand(command) {
 sendCommand({ command: 'clear' });
 sendCommand({ 
     command: 'draw',
-    image: './test.png'
+    image: './test1.png'
 });
 sendCommand({
     command: 'draw_partial',
-    image: './test1.png',
+    image: './test.png',
     x: 0,
     y: 0,
     width: 800,
