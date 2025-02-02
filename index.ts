@@ -1,30 +1,34 @@
+const { spawn } = require('child_process');
+const epdProcess = spawn('python3', ['epd_handler.py']);
 
-import { Jimp }  from 'jimp';
-import EPD from './epdDriver';
+epdProcess.stdout.on('data', (data) => {
+    console.log('EPD Handler:', data.toString());
+});
 
-// main.ts
-async function main() {
-    const epd = new EPD();
-    
-    try {
-        console.log("Initializing...");
-        await epd.init();
-        console.log("Clearing...");
-        await epd.clear();
+epdProcess.stderr.on('data', (data) => {
+    console.error('EPD Error:', data.toString());
+});
 
-        console.log("Drawing image...");
-        const imageBuffer = await epd.getBuffer("test1.png");
-        await epd.display(imageBuffer);
-        console.log("Image displayed");
-
-        // Add partial update logic here if needed
-
-        console.log("Sleeping...");
-        await epd.sleep();
-    } catch(err) {
-        console.error("Error:", err);
-        await epd.sleep();
-    }
+function sendCommand(command) {
+    epdProcess.stdin.write(JSON.stringify(command) + '\n');
 }
 
-main();
+// Example usage:
+sendCommand({ command: 'clear' });
+sendCommand({ 
+    command: 'draw',
+    image: '/path/to/fullscreen.png'
+});
+sendCommand({
+    command: 'draw_partial',
+    image: '/path/to/partial.png',
+    x: 100,
+    y: 100,
+    width: 200,
+    height: 200
+});
+
+// Cleanup when done
+process.on('exit', () => {
+    epdProcess.kill();
+});

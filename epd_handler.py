@@ -1,0 +1,65 @@
+import sys
+import json
+from epd7in5_V2 import EPD
+from PIL import Image
+import signal
+
+epd = EPD()
+
+def signal_handler(sig, frame):
+    epd.epdconfig.module_exit(cleanup=True)
+    sys.exit(0)
+
+signal.signal(signal.SIGINT, signal_handler)
+signal.signal(signal.SIGTERM, signal_handler)
+
+def handle_command(command):
+    try:
+        cmd = command.get('command')
+        
+        if cmd == 'clear':
+            epd.init()
+            epd.Clear()
+        
+        elif cmd == 'draw':
+            img_path = command.get('image')
+            img = Image.open(img_path).convert('1')
+            epd.init()
+            epd.display(epd.getbuffer(img))
+        
+        elif cmd == 'draw_partial':
+            img_path = command.get('image')
+            x = command.get('x', 0)
+            y = command.get('y', 0)
+            width = command.get('width', epd.width)
+            height = command.get('height', epd.height)
+            
+            img = Image.open(img_path).convert('1')
+            epd.init_part()
+            epd.display_Partial(epd.getbuffer(img), x, y, width, height)
+        
+        else:
+            raise ValueError(f"Unknown command: {cmd}")
+        
+        print(json.dumps({"status": "success", "command": cmd}))
+    
+    except Exception as e:
+        print(json.dumps({"status": "error", "message": str(e)}))
+    finally:
+        sys.stdout.flush()
+
+def main():
+    print("EPD handler ready", flush=True)
+    for line in sys.stdin:
+        try:
+            command = json.loads(line.strip())
+            handle_command(command)
+        except json.JSONDecodeError:
+            print(json.dumps({"status": "error", "message": "Invalid JSON"}))
+            sys.stdout.flush()
+
+if __name__ == '__main__':
+    try:
+        main()
+    finally:
+        epd.sleep()
