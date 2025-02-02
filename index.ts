@@ -32,8 +32,8 @@ async function main() {
           gravity: "southeast"
         },
       ])
-      .toFile("./test.png");
-    await epd.drawPartial("./test.png", 0, 0, 800, 480);
+      .toFile("./output/test.png");
+    await epd.drawPartial("./output/test.png", 0, 0, 800, 480);
     console.log("Partial update completed");
 
     await epd.sleep();
