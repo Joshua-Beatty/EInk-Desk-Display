@@ -7,8 +7,10 @@ import signal
 epd = EPD()
 
 def signal_handler(sig, frame):
-    epdconfig.module_exit(cleanup=True)
-    sys.exit(0)
+    try:
+        epdconfig.module_exit(cleanup=True)
+    finally:
+        sys.exit(0)
 
 signal.signal(signal.SIGINT, signal_handler)
 signal.signal(signal.SIGTERM, signal_handler)
