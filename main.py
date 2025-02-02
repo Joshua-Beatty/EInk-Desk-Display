@@ -1,6 +1,7 @@
 from epd7in5_V2 import EPD
 import io
 import time
+from PIL import Image
 
 epd = EPD()
 
@@ -11,8 +12,9 @@ epd.Clear()
 
 
 print("Drawing image")
-with open("test.png", "rb") as f:
-    buffer = io.BytesIO(f.read())
+with Image.open("test.png") as img:
+    img = img.convert("1")
+    buffer = img.tobytes() 
     epd.display(buffer)
 
 
