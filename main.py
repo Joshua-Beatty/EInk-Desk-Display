@@ -24,7 +24,7 @@ draw = ImageDraw.Draw(Himage)
 
 Himage = Image.open("test.png")
 Himage = Himage.convert("1")
-epd.display_Partial(epd.getbuffer(Himage))
+epd.display_Partial(epd.getbuffer(Himage), 0, 0, epd.width, epd.height)
 
 # num = 0
 # while num < 10:
