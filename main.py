@@ -18,6 +18,6 @@ with Image.open("test.png") as img:
     epd.display(buffer)
 
 
-print("Image Drawn")
-time.sleep(2)
-epd.sleep()
+# print("Image Drawn")
+# time.sleep(2)
+# epd.sleep()
