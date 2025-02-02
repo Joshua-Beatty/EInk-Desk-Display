@@ -5,7 +5,7 @@ import fs from "fs";
 async function drawTime(epd: EPDController) {
   const image = sharp("./test2.png");
 
-  const time = new Date().toLocaleString().split(", ")[1];
+  const time = new Date().toLocaleString('en-US', { timeZone: 'America/Denver' }).split(", ")[1];
   await image
     .composite([
       {
@@ -41,21 +41,12 @@ async function main() {
     await epd.drawPartial("./test2.png", 0, 0, 800, 480);
     console.log("Partial update completed");
 
-    await drawTime(epd);
-    await drawTime(epd);
-    await drawTime(epd);
-    await drawTime(epd);
-    await drawTime(epd);
-    await drawTime(epd);
-    await drawTime(epd);
-    await drawTime(epd);
-    await drawTime(epd);
-    await drawTime(epd);
-    await drawTime(epd);
-    await drawTime(epd);
-    await drawTime(epd);
-    await drawTime(epd);
-    await drawTime(epd);
+    let count = 0;
+    while(count < 15){
+        count++
+        await waitUntilNextSecond()
+        await drawTime(epd);
+    }
 
     await epd.sleep();
     console.log("Display sleeping");
@@ -67,3 +58,11 @@ async function main() {
 }
 
 main();
+
+function waitUntilNextSecond(): Promise<void> {
+    return new Promise(resolve => {
+        const now = new Date();
+        const msUntilNextSecond = 1000 - now.getMilliseconds();
+        setTimeout(resolve, msUntilNextSecond);
+    });
+}
