@@ -90,10 +90,15 @@ class EPD {
     }
 
     async clear(): Promise<void> {
+        console.log(1)
         const buf = Buffer.alloc(EPD_WIDTH * EPD_HEIGHT / 8).fill(0xFF);
+        console.log(2)
         await this.sendCommand(0x10);
+        console.log(3)
         await this.sendData(buf);
+        console.log(4)
         await this.sendCommand(0x13);
+        console.log(5)
         await this.sendData(Buffer.alloc(EPD_WIDTH * EPD_HEIGHT / 8).fill(0x00));
         await this.sendCommand(0x12);
         await this.config.delayMs(100);
