@@ -20,9 +20,11 @@ async function main() {
     await image
       .composite([
         {
+            
           input: {
+            
             text: {
-              text: new Date().toLocaleString().split(", ")[1],
+              text: `<span foreground="black" background="white">${new Date().toLocaleString().split(", ")[1]}</span>`,
               width: 450,
               height: 150,
             },
