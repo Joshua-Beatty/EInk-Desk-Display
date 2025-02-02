@@ -1,7 +1,6 @@
 from epd7in5_V2 import EPD
-import io
+from PIL import Image, ImageOps
 import time
-from PIL import Image
 
 epd = EPD()
 
@@ -14,10 +13,11 @@ epd.Clear()
 print("Drawing image")
 with Image.open("test.png") as img:
     img = img.convert("1")
+    img = ImageOps.invert(img)
     buffer = img.tobytes() 
     epd.display(buffer)
 
 
-# print("Image Drawn")
-# time.sleep(2)
-# epd.sleep()
+print("Image Drawn")
+time.sleep(2)
+epd.sleep()
