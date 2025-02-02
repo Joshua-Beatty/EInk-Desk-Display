@@ -26,8 +26,8 @@ class EPD {
     }
 
     private async readBusy(): Promise<void> {
-        await this.sendCommand(0x71);
         while(this.config.digitalRead(this.config.BUSY_PIN) === 0) {
+            await this.sendCommand(0x71);
             await this.config.delayMs(20);
         }
     }
