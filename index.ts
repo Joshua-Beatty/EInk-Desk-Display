@@ -2,21 +2,8 @@ import sharp from "sharp";
 import EPDController from "./epdController";
 import fs from "fs"
 
-async function main() {
-  const epd = new EPDController();
-  fs.mkdirSync('./output');
 
-  try {
-    // Execute commands sequentially with proper typing
-    await epd.clear();
-    console.log("Display cleared");
-
-    await epd.draw("./test1.png");
-    console.log("Full image drawn");
-
-    await epd.drawPartial("./test2.png", 0, 0, 800, 480);
-    console.log("Partial update completed");
-
+async function drawTime(epd: EPDController){
     const image = sharp("./test2.png");
 
     const time = new Date().toLocaleString().split(", ")[1];
@@ -37,6 +24,37 @@ async function main() {
       .toFile("./output/test.png");
     await epd.drawPartial("./output/test.png", 0, 0, 800, 480);
     console.log("Partial update completed");
+}
+async function main() {
+  const epd = new EPDController();
+  fs.mkdirSync('./output');
+
+  try {
+    // Execute commands sequentially with proper typing
+    await epd.clear();
+    console.log("Display cleared");
+
+    await epd.draw("./test1.png");
+    console.log("Full image drawn");
+
+    await epd.drawPartial("./test2.png", 0, 0, 800, 480);
+    console.log("Partial update completed");
+
+    await drawTime(epd)
+    await drawTime(epd)
+    await drawTime(epd)
+    await drawTime(epd)
+    await drawTime(epd)
+    await drawTime(epd)
+    await drawTime(epd)
+    await drawTime(epd)
+    await drawTime(epd)
+    await drawTime(epd)
+    await drawTime(epd)
+    await drawTime(epd)
+    await drawTime(epd)
+    await drawTime(epd)
+    await drawTime(epd)
 
     await epd.sleep();
     console.log("Display sleeping");
