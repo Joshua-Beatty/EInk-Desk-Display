@@ -11,11 +11,10 @@ epd.Clear()
 
 
 print("Drawing image")
-# Load and invert the initial image
-with Image.open("test1.png") as Himage:
-    Himage = Himage.convert("1")  # Convert back to 1-bit black & white
 
-epd.display(epd.getbuffer(Himage))  # Show the corrected initial image
+Himage = Image.open("test1.png")
+Himage = Himage.convert("1")
+epd.display(epd.getbuffer(Himage))
 
 print("Initial image displayed")
 
@@ -23,15 +22,19 @@ print("Initial image displayed")
 epd.init_part()
 draw = ImageDraw.Draw(Himage)
 
-num = 0
-while num < 10:
-    draw.rectangle((31, 150, 130, 170), fill=0)  # Erase old time
-    draw.text((31, 150), time.strftime('%H:%M:%S'), fill=255)  # Draw new time
+Himage = Image.open("test.png")
+Himage = Himage.convert("1")
+epd.display_Partial(epd.getbuffer(Himage))
 
-    epd.display_Partial(epd.getbuffer(Himage), 0, 0, epd.width, epd.height)  # Update part of the screen
+# num = 0
+# while num < 10:
+#     draw.rectangle((31, 150, 130, 170), fill=255)  # Erase old time
+#     draw.text((31, 150), time.strftime('%H:%M:%S'), fill=0)  # Draw new time
 
-    time.sleep(1)  # Wait before updating again
-    num += 1
+#     epd.display_Partial(epd.getbuffer(Himage), 0, 0, epd.width, epd.height)  # Update part of the screen
+
+#     time.sleep(1)  # Wait before updating again
+#     num += 1
 
 print("Finished updating time")
 
