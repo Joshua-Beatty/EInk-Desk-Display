@@ -12,10 +12,11 @@ epd.Clear()
 
 print("Drawing image")
 # Load and invert the initial image
-with Image.open("test1.png") as Himage:
-    Himage = Himage.convert("L")  # Convert to grayscale (needed for inversion)
-    Himage = ImageOps.invert(Himage)  # Invert only once
-    Himage = Himage.convert("1")  # Convert back to 1-bit black & white
+with Image.open("7in5_V2.bmp") as Himage:
+    # Himage = Himage.convert("L")  # Convert to grayscale (needed for inversion)
+    # Himage = ImageOps.invert(Himage)  # Invert only once
+    # Himage = Himage.convert("1")  # Convert back to 1-bit black & white
+    pass
 
 buffer = Himage.tobytes()  # Convert to raw bytes
 epd.display(buffer)  # Show the corrected initial image
