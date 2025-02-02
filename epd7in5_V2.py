@@ -87,6 +87,7 @@ class EPD:
         self.send_command(0x71)
         busy = epdconfig.digital_read(self.busy_pin)
         while(busy == 0):
+            print(busy)
             self.send_command(0x71)
             busy = epdconfig.digital_read(self.busy_pin)
         epdconfig.delay_ms(20)
@@ -200,7 +201,7 @@ class EPD:
 
         # EPD hardware init end
         return 0
-        
+
     def getbuffer(self, image):
         img = image
         imwidth, imheight = img.size
