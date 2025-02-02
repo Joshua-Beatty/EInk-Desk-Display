@@ -17,15 +17,15 @@ function sendCommand(command) {
 sendCommand({ command: 'clear' });
 sendCommand({ 
     command: 'draw',
-    image: '/path/to/fullscreen.png'
+    image: './test.png'
 });
 sendCommand({
     command: 'draw_partial',
-    image: '/path/to/partial.png',
-    x: 100,
-    y: 100,
-    width: 200,
-    height: 200
+    image: './test1.png',
+    x: 0,
+    y: 0,
+    width: 800,
+    height: 480
 });
 
 // Cleanup when done
