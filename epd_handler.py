@@ -14,18 +14,21 @@ signal.signal(signal.SIGINT, signal_handler)
 signal.signal(signal.SIGTERM, signal_handler)
 
 def handle_command(command):
+    response = {"id": command.get('id')}
     try:
         cmd = command.get('command')
         
         if cmd == 'clear':
             epd.init()
             epd.Clear()
+            response.update({"status": "success", "command": cmd})
         
         elif cmd == 'draw':
             img_path = command.get('image')
             img = Image.open(img_path).convert('1')
             epd.init()
             epd.display(epd.getbuffer(img))
+            response.update({"status": "success", "command": cmd})
         
         elif cmd == 'draw_partial':
             img_path = command.get('image')
@@ -37,16 +40,16 @@ def handle_command(command):
             img = Image.open(img_path).convert('1')
             epd.init_part()
             epd.display_Partial(epd.getbuffer(img), x, y, width, height)
+            response.update({"status": "success", "command": cmd})
         
         else:
             raise ValueError(f"Unknown command: {cmd}")
-        
-        print(json.dumps({"status": "success", "command": cmd}))
     
     except Exception as e:
-        print(json.dumps({"status": "error", "message": str(e)}))
-    finally:
-        sys.stdout.flush()
+        response.update({"status": "error", "message": str(e)})
+    
+    print(json.dumps(response))
+    sys.stdout.flush()
 
 def main():
     print("EPD handler ready", flush=True)
@@ -55,7 +58,12 @@ def main():
             command = json.loads(line.strip())
             handle_command(command)
         except json.JSONDecodeError:
-            print(json.dumps({"status": "error", "message": "Invalid JSON"}))
+            error_response = json.dumps({
+                "status": "error",
+                "message": "Invalid JSON",
+                "id": None
+            })
+            print(error_response)
             sys.stdout.flush()
 
 if __name__ == '__main__':

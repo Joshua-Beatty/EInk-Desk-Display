@@ -5,6 +5,8 @@
   "dependencies": {
     "jimp": "^1.6.0",
     "onoff": "^6.0.3",
-    "spi-device": "^3.1.2"
+    "spi-device": "^3.1.2",
+    "typescript": "^5.7.3",
+    "uuid": "^11.0.5"
   }
 }
