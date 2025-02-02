@@ -28,8 +28,8 @@ draw = ImageDraw.Draw(Himage)
 
 num = 0
 while num < 10:
-    draw.rectangle((31, 150, 130, 170), fill=255)  # Erase old time
-    draw.text((31, 150), time.strftime('%H:%M:%S'), fill=0)  # Draw new time
+    draw.rectangle((31, 150, 130, 170), fill=0)  # Erase old time
+    draw.text((31, 150), time.strftime('%H:%M:%S'), fill=255)  # Draw new time
 
     epd.display_Partial(epd.getbuffer(Himage), 0, 0, epd.width, epd.height)  # Update part of the screen
 
