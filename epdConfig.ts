@@ -49,7 +49,9 @@ class EPDConfig {
 
     digitalRead(pin: number): number {
         if(pin === this.BUSY_PIN) {
-            return this.gpioBusy.readSync();
+            const t = this.gpioBusy.readSync()
+            console.log(t)
+            return t;
         }
         return 0;
     }
