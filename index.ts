@@ -1,8 +1,10 @@
 import sharp from "sharp";
 import EPDController from "./epdController";
+import fs from "fs"
 
 async function main() {
   const epd = new EPDController();
+  fs.mkdirSync('./output');
 
   try {
     // Execute commands sequentially with proper typing
