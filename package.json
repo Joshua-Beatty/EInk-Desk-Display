@@ -1,0 +1,10 @@
+{
+  "devDependencies": {
+    "@types/node": "^22.13.0"
+  },
+  "dependencies": {
+    "jimp": "^1.6.0",
+    "onoff": "^6.0.3",
+    "spi-device": "^3.1.2"
+  }
+}
