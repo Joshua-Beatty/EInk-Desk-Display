@@ -61,16 +61,26 @@ class EPDConfig {
     }
 
     spiWrite(data: Buffer): Promise<void> {
-        return new Promise((resolve, reject) => {
-            this.spiDevice.transfer([{
-                byteLength: data.length,
-                sendBuffer: data,
-                speedHz: 4000000
-            }], (err) => {
-                if(err) reject(err);
-                else resolve();
+            const chunkSize = 4096; // Max chunk size based on your buffer size
+            const chunks: any[] = [];
+        
+            // Split the data into chunks
+            for (let i = 0; i < data.length; i += chunkSize) {
+                const chunk = data.slice(i, i + chunkSize);
+                chunks.push({
+                    byteLength: chunk.length,
+                    sendBuffer: chunk,
+                    speedHz: 4000000
+                });
+            }
+        
+            // Perform the transfer with all chunks at once
+            return new Promise((resolve, reject) => {
+                this.spiDevice.transfer(chunks, (err) => {
+                    if (err) reject(err);
+                    else resolve();
+                });
             });
-        });
     }
 
     async moduleExit(): Promise<void> {
