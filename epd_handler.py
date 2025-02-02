@@ -1,19 +1,9 @@
 import sys
 import json
-from epd7in5_V2 import EPD, epdconfig
+from epd7in5_V2 import EPD
 from PIL import Image
-import signal
 
 epd = EPD()
-
-def signal_handler(sig, frame):
-    try:
-        epdconfig.module_exit(cleanup=True)
-    finally:
-        sys.exit(0)
-
-signal.signal(signal.SIGINT, signal_handler)
-signal.signal(signal.SIGTERM, signal_handler)
 
 def handle_command(command):
     response = {"id": command.get('id')}
@@ -44,6 +34,10 @@ def handle_command(command):
             epd.display_Partial(epd.getbuffer(img), x, y, width, height)
             response.update({"status": "success", "command": cmd})
         
+        elif cmd == 'sleep':
+            epd.sleep()
+            response.update({"status": "success", "command": cmd})
+        
         else:
             raise ValueError(f"Unknown command: {cmd}")
     
@@ -72,4 +66,4 @@ if __name__ == '__main__':
     try:
         main()
     finally:
-        epd.sleep()
+        pass

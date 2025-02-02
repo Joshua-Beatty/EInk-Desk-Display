@@ -1,69 +1,28 @@
 import { spawn, ChildProcess } from 'child_process';
 import { v4 as uuidv4 } from 'uuid';
 
-// Command types
-interface ClearCommand {
-  command: 'clear';
-}
-
-interface DrawCommand {
-  command: 'draw';
-  image: string;
-}
-
-interface DrawPartialCommand {
-  command: 'draw_partial';
-  image: string;
-  x?: number;
-  y?: number;
-  width?: number;
-  height?: number;
-}
-
-type EPDCommand = ClearCommand | DrawCommand | DrawPartialCommand;
-
-// Response types
-interface SuccessResponse {
+interface CommandResponse {
   id: string;
-  status: 'success';
-  command: string;
+  status: 'success' | 'error';
+  command?: string;
+  message?: string;
 }
 
-interface ErrorResponse {
-  id: string;
-  status: 'error';
-  message: string;
-}
-
-type EPDResponse = SuccessResponse | ErrorResponse;
-
-type PendingPromise = {
-  resolve: (value: EPDResponse) => void;
-  reject: (reason?: ErrorResponse) => void;
+type ResponseHandler = {
+  resolve: (value: CommandResponse) => void;
+  reject: (reason?: CommandResponse) => void;
 };
 
 class EPDController {
   private process: ChildProcess;
-  private pending: Map<string, PendingPromise>;
+  private pending = new Map<string, ResponseHandler>();
 
   constructor() {
     this.process = spawn('python3', ['epd_handler.py']);
-    this.pending = new Map();
-
+    
     this.process.stdout?.on('data', (data: Buffer) => {
       const responses = data.toString().trim().split('\n');
-      responses.forEach((response) => {
-        try {
-          const parsed: EPDResponse = JSON.parse(response);
-          if (parsed.id && this.pending.has(parsed.id)) {
-            const { resolve, reject } = this.pending.get(parsed.id)!;
-            this.pending.delete(parsed.id);
-            parsed.status === 'success' ? resolve(parsed) : reject(parsed);
-          }
-        } catch (e) {
-          console.error('Failed to parse response:', response);
-        }
-      });
+      responses.forEach(response => this.handleResponse(response));
     });
 
     this.process.stderr?.on('data', (data: Buffer) => {
@@ -71,14 +30,57 @@ class EPDController {
     });
   }
 
-  public async sendCommand<C extends EPDCommand>(command: C): Promise<EPDResponse> {
+  private handleResponse(response: string): void {
+    try {
+      const parsed: CommandResponse = JSON.parse(response);
+      if (parsed.id && this.pending.has(parsed.id)) {
+        const handler = this.pending.get(parsed.id)!;
+        this.pending.delete(parsed.id);
+        parsed.status === 'success' ? handler.resolve(parsed) : handler.reject(parsed);
+      }
+    } catch (e) {
+      console.error('Failed to parse response:', response);
+    }
+  }
+
+  private sendCommand<T extends object>(command: T): Promise<CommandResponse> {
     return new Promise((resolve, reject) => {
       const id = uuidv4();
-      const payload = { ...command, id } as C & { id: string };
-
+      const payload = { ...command, id };
+      
       this.pending.set(id, { resolve, reject });
       this.process.stdin?.write(JSON.stringify(payload) + '\n');
     });
+  }
+
+  public async clear(): Promise<CommandResponse> {
+    return this.sendCommand({ command: 'clear' });
+  }
+
+  public async draw(imagePath: string): Promise<CommandResponse> {
+    return this.sendCommand({ 
+      command: 'draw',
+      image: imagePath
+    });
+  }
+
+  public async drawPartial(
+    imagePath: string,
+    position: { x: number; y: number },
+    dimensions: { width: number; height: number }
+  ): Promise<CommandResponse> {
+    return this.sendCommand({
+      command: 'draw_partial',
+      image: imagePath,
+      x: position.x,
+      y: position.y,
+      width: dimensions.width,
+      height: dimensions.height
+    });
+  }
+
+  public async sleep(): Promise<CommandResponse> {
+    return this.sendCommand({ command: 'sleep' });
   }
 
   public destroy(): void {
@@ -92,28 +94,22 @@ async function main() {
   const epd = new EPDController();
   
   try {
-    // Clear command
-    await epd.sendCommand({ command: 'clear' });
-    console.log("JS CLEARED")
+    // Execute commands sequentially with proper typing
+    await epd.clear();
+    console.log('Display cleared');
     
-    // Draw full image
-    await epd.sendCommand({
-      command: 'draw',
-      image: './test1.png'
-    });
-    console.log("JS DREW")
+    await epd.draw('./test1.png');
+    console.log('Full image drawn');
     
-    // Partial update
-    await epd.sendCommand({
-      command: 'draw_partial',
-      image: './test2.png',
-      x: 0,
-      y: 0,
-      width: 800,
-      height: 480
-    });
-    console.log("JS DREW PARTIAL")
+    await epd.drawPartial(
+      './test2.png',
+      { x: 0, y: 0 },
+      { width: 800, height: 480 }
+    );
+    console.log('Partial update completed');
     
+    await epd.sleep();
+    console.log('Display sleeping');
   } catch (error) {
     console.error('Command failed:', error);
   } finally {
