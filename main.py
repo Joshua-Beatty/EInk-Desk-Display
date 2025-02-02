@@ -17,21 +17,20 @@ with Image.open("test.png") as img:
     buffer = img.tobytes() 
     epd.display(buffer)
 
-    # partial update
-print("4.show time")
-epd.init()
-epd.display_Base_color(0xFF)
+# partial update
+print("5.show time")
 epd.init_part()
 Himage = Image.new('1', (epd.width, epd.height), 0)
-draw_Himage = ImageDraw.Draw(Himage)
+draw = ImageDraw.Draw(Himage)
 num = 0
 while (True):
-    draw_Himage.rectangle((31, 150, 130, 170), fill = 0)
-    draw_Himage.text((31, 150), time.strftime('%H:%M:%S'), fill = 255)
+    draw.rectangle((31, 150, 130, 170), fill = 255)
+    draw.text((31, 150), time.strftime('%H:%M:%S'), fill = 0)
     epd.display_Partial(epd.getbuffer(Himage),0, 0, epd.width, epd.height)
     num = num + 1
     if(num == 10):
         break
+
 
 
 print("Image Drawn")
