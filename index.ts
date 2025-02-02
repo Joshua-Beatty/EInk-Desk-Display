@@ -4,11 +4,11 @@ import { Jimp }  from 'jimp';
 
 // epdconfig.ts
 class EPDConfig {
-    readonly RST_PIN = 17;
-    readonly DC_PIN = 25;
-    readonly CS_PIN = 8;
-    readonly BUSY_PIN = 24;
-    readonly PWR_PIN = 18;
+    readonly RST_PIN = 17 + 512;
+    readonly DC_PIN = 25 + 512;
+    readonly CS_PIN = 8 + 512;
+    readonly BUSY_PIN = 24 + 512;
+    readonly PWR_PIN = 18 + 512;
 
     private spiDevice: spi.SpiDevice;
     private gpioRst: Gpio;
