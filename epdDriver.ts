@@ -17,19 +17,25 @@ class EPD {
 
     private async sendCommand(command: number): Promise<void> {
         this.config.digitalWrite(this.config.DC_PIN, 0);
+        this.config.digitalWrite(this.config.CS_PIN, 0);
         await this.config.spiWrite(Buffer.from([command]));
+        this.config.digitalWrite(this.config.CS_PIN, 1);
     }
 
     private async sendData(data: Buffer): Promise<void> {
         this.config.digitalWrite(this.config.DC_PIN, 1);
+        this.config.digitalWrite(this.config.CS_PIN, 0);
         await this.config.spiWrite(data);
+        this.config.digitalWrite(this.config.CS_PIN, 1);
     }
 
     private async readBusy(): Promise<void> {
+        await this.sendCommand(0x71);
         while(this.config.digitalRead(this.config.BUSY_PIN) === 0) {
             await this.sendCommand(0x71);
             await this.config.delayMs(20);
         }
+        await this.config.delayMs(20);
     }
 
     async reset(): Promise<void> {
