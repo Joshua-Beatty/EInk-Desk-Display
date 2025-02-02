@@ -2,7 +2,17 @@ from epd7in5_V2 import EPD
 from PIL import Image, ImageOps, ImageDraw, ImageFont
 import time
 
+import signal
+import sys
+
+
 epd = EPD()
+
+def signal_handler(sig, frame):
+    epd.epdconfig.module_exit(cleanup=True)
+    sys.exit(0)
+
+signal.signal(signal.SIGINT, signal_handler)
 
 print("init ")
 epd.init()
