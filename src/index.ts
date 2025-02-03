@@ -69,9 +69,6 @@ if(process.platform.includes("win")){
   puppeteer = puppeteerCore
 }
 import getHtml from "./main";
-import { Jimp } from "jimp";
-import { imageFromURL, intBufferFromImage, GRAY8 } from "@thi.ng/pixel";
-import { ditherWith, ATKINSON } from "@thi.ng/pixel-dither";
 
 async function takeScreenshot() {
   console.log("loading browser");
@@ -84,9 +81,13 @@ async function takeScreenshot() {
   const html = await getHtml();
   console.log(html)
   await page.setContent( html);
+  // await sleep(1000)
   console.log("taking screenshot");
   const screenshot = await page.screenshot({});
   console.log("saving screenshot");
   fs.writeFileSync("./output/output.png", screenshot);
   browser.close();
+}
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }
