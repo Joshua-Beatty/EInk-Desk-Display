@@ -37,7 +37,7 @@ async function main() {
     await epd.clear();
     console.log("Display cleared");
 
-    await epd.draw("./test5.png");
+    await epd.draw("./test6.png");
     console.log("Full image drawn");
     //     let count = 0;
     //     while(count < 15){
