@@ -46,7 +46,7 @@ async function main() {
       await waitUntilNextMinute()
       const output = "./output/output.png"
       await takeScreenshot(output);
-      await epd.draw(output);
+      await epd.drawPartial(output, 0,0, 800, 480);
     }
 
     await epd.sleep();
