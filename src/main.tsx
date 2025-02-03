@@ -7,6 +7,7 @@ let data: {
     maxTemp: number;
     weatherCodes: { text: string; img: string };
     temp: number;
+    precipitation: number;
   };
   tasks: any[];
 };
@@ -30,11 +31,10 @@ function Index() {
         </div>
         <div className="border-neutral-400 border-4 w-full rounded-2xl p-2 h-full flex flex-col items-center">
           <div className="font-semibold text-4xl flex flex-col items-center pt-4">
-            <h1>{data.weather.weatherCodes.text}</h1>
+            <h1>{data.weather.weatherCodes.text} {data.weather.temp}°F</h1>
             <div>
-              {data.weather.temp}°F
               <span className="text-lg pl-4">
-                {data.weather.maxTemp}°F/{data.weather.minTemp}°F
+                {data.weather.maxTemp}°/{data.weather.minTemp}° {data.weather.precipitation}% 
               </span>
             </div>
           </div>
@@ -96,16 +96,17 @@ async function getHtml() {
 
   //weather
   const response = await fetch(
-    `https://api.open-meteo.com/v1/forecast?latitude=${process.env.LAT}&longitude=${process.env.LONG}&current=temperature_2m,apparent_temperature&daily=weather_code,temperature_2m_max,temperature_2m_min,apparent_temperature_max,apparent_temperature_min,sunrise,sunset,precipitation_sum,rain_sum,showers_sum,snowfall_sum&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=America%2FDenver&forecast_days=1`
+    `https://api.open-meteo.com/v1/forecast?latitude=${process.env.LAT}&longitude=${process.env.LONG}&current=temperature_2m,apparent_temperature&daily=precipitation_probability_max,weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,precipitation_sum&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=America%2FDenver&forecast_days=1`
   );
   const weatherData: any = await response.json();
+  console.log(weatherData)
 
   //todoist
   const taskResponse = await fetch("https://api.todoist.com/rest/v2/tasks", {
     headers: { Authorization: `Bearer ${process.env.TODOIST_API_KEY}` },
   });
   const taskData: any = (await taskResponse.json()) || [];
-  console.log(taskData);
+  // console.log(taskData);
   data.tasks = taskData;
 
   data.weather = {
@@ -113,6 +114,7 @@ async function getHtml() {
     maxTemp: Math.round(weatherData.daily.temperature_2m_max[0]),
     weatherCodes: weatherCodes[weatherData.daily.weather_code[0]],
     temp: Math.round(weatherData.current.temperature_2m),
+    precipitation: Math.round(weatherData.daily.precipitation_probability_max[0]),
   };
   console.log(data.weather);
 
