@@ -37,9 +37,17 @@ async function main() {
     await epd.clear();
     console.log("Display cleared");
 
-    await takeScreenshot();
-    await epd.draw("./output/output.png");
+    const output = "./output/output.png"
+    await takeScreenshot(output);
+    await epd.draw(output);
     console.log("Full image drawn");
+
+    for(let i = 0; i < 15; i++){
+      await waitUntilNextMinute()
+      const output = "./output/output.png"
+      await takeScreenshot(output);
+      await epd.draw(output);
+    }
 
     await epd.sleep();
     console.log("Display sleeping");
@@ -51,7 +59,11 @@ async function main() {
 }
 
 main();
-
+function waitUntilNextMinute() {
+  const now = new Date();
+  const secondsToWait = 60 - now.getSeconds();
+  return new Promise(resolve => setTimeout(resolve, secondsToWait * 1000));
+}
 function waitUntilNextSecond(): Promise<void> {
   return new Promise((resolve) => {
     const now = new Date();
@@ -70,22 +82,14 @@ if(process.platform.includes("win")){
 }
 import getHtml from "./main";
 
-async function takeScreenshot() {
-  console.log("loading browser");
+async function takeScreenshot(outputPath: string) {
   const browser = await puppeteer.launch(process.platform.includes("win") ? {} : {executablePath: '/usr/bin/chromium-browser'});
-  console.log("loading page");
   const page = await browser.newPage();
-  console.log("Setting viewport");
   await page.setViewport({ width: 800, height: 480});
-  console.log("Setting content");
   const html = await getHtml();
-  console.log(html)
   await page.setContent( html);
-  // await sleep(1000)
-  console.log("taking screenshot");
   const screenshot = await page.screenshot({});
-  console.log("saving screenshot");
-  fs.writeFileSync("./output/output.png", screenshot);
+  fs.writeFileSync(outputPath, screenshot);
   browser.close();
 }
 function sleep(ms) {
