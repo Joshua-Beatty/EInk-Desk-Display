@@ -21,7 +21,7 @@ class EPDController {
     if(process.platform.includes("win")){
         return;
     }
-    this.process = spawn("python3", ["epd_handler.py"]);
+    this.process = spawn("python3", ["./pythonDriver/epd_handler.py"]);
 
     this.process.stdout?.on("data", (data: Buffer) => {
       const responses = data.toString().trim().split("\n");
