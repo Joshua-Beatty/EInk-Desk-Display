@@ -37,14 +37,9 @@ async function main() {
     await epd.clear();
     console.log("Display cleared");
 
-    await epd.draw("./test6.png");
+    await takeScreenshot();
+    await epd.draw("./output/output.png");
     console.log("Full image drawn");
-    //     let count = 0;
-    //     while(count < 15){
-    //         count++
-    //         await waitUntilNextSecond()
-    //         await drawTime(epd);
-    //     }
 
     await epd.sleep();
     console.log("Display sleeping");
@@ -71,7 +66,7 @@ import { Jimp } from "jimp";
 import { imageFromURL, intBufferFromImage, GRAY8 } from "@thi.ng/pixel";
 import { ditherWith, ATKINSON } from "@thi.ng/pixel-dither";
 
-async function test() {
+async function takeScreenshot() {
   console.log("loading browser");
   const browser = await puppeteer.launch();
   console.log("loading page");
@@ -85,7 +80,6 @@ async function test() {
   console.log("taking screenshot");
   const screenshot = await page.screenshot({});
   console.log("saving screenshot");
-  fs.writeFileSync("./output/output1.png", screenshot);
+  fs.writeFileSync("./output/output.png", screenshot);
   browser.close();
 }
-// test();
