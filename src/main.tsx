@@ -8,6 +8,7 @@ let data: {
     weatherCodes: { text: string; img: string };
     temp: number;
   };
+  tasks: any[];
 };
 function Index() {
   const currDate = new Date();
@@ -21,27 +22,14 @@ function Index() {
   let day = currDate.toLocaleString("en-US", dateOptions);
   let time = currDate.toLocaleString("en-US", timeOptions);
   return (
-    <div className="bg-white w-screen h-screen p-2 gap-2 flex flex-col antialiased">
-      <div className="gap-2 flex flex-row h-[45%]">
-        <div className="w-2/5 h-full border-4 p-2 rounded-2xl border-neutral-400">
+    <div className="bg-white w-screen h-screen p-2 gap-2 flex flex-row antialiased">
+      <div className="gap-2 flex flex-col w-[40%] justify-center items-center">
+        <div className="w-full border-4 p-2 rounded-2xl border-neutral-400   flex flex-col justify-center items-center">
           <div className="text-5xl font-bold text-neutral-700">{day}</div>
           <div className="text-6xl font-bold">{time}</div>
         </div>
-        <div className="w-3/5 h-full border-4 p-2 rounded-2xl border-neutral-400">
-          <div className="text-2xl font-bold">
-            {data.wotd.word}{" "}
-            <span className="text-base font-semibold italic">
-              {data.wotd.part}
-            </span>
-          </div>
-          <div className="text-md font-semibold">
-            <div>{data.wotd.definition}</div>
-          </div>
-        </div>
-      </div>
-      <div className="w-full h-full flex flex-row gap-2">
-        <div className="border-neutral-400 border-4 rounded-2xl p-2">
-          <div className="font-semibold text-4xl">
+        <div className="border-neutral-400 border-4 w-full rounded-2xl p-2 h-full flex flex-col items-center">
+          <div className="font-semibold text-4xl flex flex-col items-center pt-4">
             <h1>{data.weather.weatherCodes.text}</h1>
             <div>
               {data.weather.temp}°F
@@ -50,10 +38,39 @@ function Index() {
               </span>
             </div>
           </div>
-          <img src={data.weather.weatherCodes.img} className="w-70 h-70 -mt-10 -mb-30" />
+          <img
+            src={data.weather.weatherCodes.img}
+            className="w-70 h-70 -mt-10 -mb-30"
+          />
         </div>
-        <div className="border-neutral-400 border-4 rounded-2xl w-full p-2">
-
+      </div>
+      <div className="w-[60%] h-full flex flex-col gap-2">
+        <div className="w-full border-4 p-3 rounded-2xl border-neutral-400 min-h-[10rem]">
+          <div className="text-3xl font-bold pb-2">
+            {data.wotd.word}{" "}
+            <span className="text-lg font-semibold italic">
+              {data.wotd.part}
+            </span>
+          </div>
+          <hr className="" />
+          <div className="text-lg font-semibold pt-2">
+            <div>{data.wotd.definition}</div>
+          </div>
+        </div>
+        <div className="border-neutral-400 border-4 rounded-2xl w-full h-full p-3">
+          <div className="text-4xl font-bold pb-2">Tasks</div>
+          <div className="text-2xl">
+            <ul>
+              {data.tasks.map((x) => (
+                <li key={x.id}>
+                  <div className="flex flex-row justify-start items-center gap-2">
+                    <div className="w-2.5 h-2.5 border-black border-1" />
+                    {x.content}{x.due ? ` - ${x.due.string}`: ""}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
     </div>
@@ -79,9 +96,17 @@ async function getHtml() {
 
   //weather
   const response = await fetch(
-    "https://api.open-meteo.com/v1/forecast?latitude=40.56&longitude=-112&current=temperature_2m,apparent_temperature&daily=weather_code,temperature_2m_max,temperature_2m_min,apparent_temperature_max,apparent_temperature_min,sunrise,sunset,precipitation_sum,rain_sum,showers_sum,snowfall_sum&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=America%2FDenver&forecast_days=1"
+    `https://api.open-meteo.com/v1/forecast?latitude=${process.env.LAT}&longitude=${process.env.LONG}&current=temperature_2m,apparent_temperature&daily=weather_code,temperature_2m_max,temperature_2m_min,apparent_temperature_max,apparent_temperature_min,sunrise,sunset,precipitation_sum,rain_sum,showers_sum,snowfall_sum&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=America%2FDenver&forecast_days=1`
   );
   const weatherData: any = await response.json();
+
+  //todoist
+  const taskResponse = await fetch("https://api.todoist.com/rest/v2/tasks", {
+    headers: { Authorization: `Bearer ${process.env.TODOIST_API_KEY}` },
+  });
+  const taskData: any = (await taskResponse.json()) || [];
+  console.log(taskData);
+  data.tasks = taskData;
 
   data.weather = {
     minTemp: Math.round(weatherData.daily.temperature_2m_min[0]),
