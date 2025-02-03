@@ -37,7 +37,7 @@ async function main() {
     await epd.clear();
     console.log("Display cleared");
 
-    await epd.draw("./test4.png");
+    await epd.draw("./test5.png");
     console.log("Full image drawn");
     //     let count = 0;
     //     while(count < 15){
@@ -77,25 +77,15 @@ async function test() {
   console.log("loading page");
   const page = await browser.newPage();
   console.log("Setting viewport");
-  await page.setViewport({ width: 800, height: 480, deviceScaleFactor: 4});
+  await page.setViewport({ width: 800, height: 480});
   console.log("Setting content");
   const html = await getHtml();
   console.log(html)
   await page.setContent( html);
   console.log("taking screenshot");
   const screenshot = await page.screenshot({});
-  
-  const image = await Jimp.read(Buffer.from(screenshot))
-  image.dither().write("./output/output3.png")
-
-  const data = await sharp(screenshot)
-  .toColourspace('b-w')
-  .png({ palette: true, colors: 2 })
-  .toBuffer();
-
   console.log("saving screenshot");
   fs.writeFileSync("./output/output1.png", screenshot);
-  fs.writeFileSync("./output/output2.png", data);
   browser.close();
 }
 // test();
