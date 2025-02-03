@@ -90,6 +90,7 @@ async function takeScreenshot(outputPath: string) {
   await page.setContent( html);
   const screenshot = await page.screenshot({});
   fs.writeFileSync(outputPath, screenshot);
+  fs.writeFileSync("./output/index.html", html);
   browser.close();
 }
 function sleep(ms) {
