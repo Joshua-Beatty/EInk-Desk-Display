@@ -60,7 +60,14 @@ function waitUntilNextSecond(): Promise<void> {
   });
 }
 
-import puppeteer from "puppeteer";
+let puppeteer
+import puppeteerMain from "puppeteer"
+import puppeteerCore from "puppeteer-core"
+if(process.platform.includes("win")){
+  puppeteer = puppeteerMain
+} else {
+  puppeteer = puppeteerCore
+}
 import getHtml from "./main";
 import { Jimp } from "jimp";
 import { imageFromURL, intBufferFromImage, GRAY8 } from "@thi.ng/pixel";
@@ -68,7 +75,7 @@ import { ditherWith, ATKINSON } from "@thi.ng/pixel-dither";
 
 async function takeScreenshot() {
   console.log("loading browser");
-  const browser = await puppeteer.launch();
+  const browser = await puppeteer.launch(process.platform.includes("win") ? {} : {executablePath: '/usr/bin/chromium-browser'});
   console.log("loading page");
   const page = await browser.newPage();
   console.log("Setting viewport");
