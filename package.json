@@ -6,31 +6,16 @@
     "@types/node": "^22.13.0"
   },
   "dependencies": {
-    "@jimp/plugin-dither": "^1.6.0",
-    "@thi.ng/pixel": "^7.3.15",
-    "@thi.ng/pixel-dither": "^1.1.155",
-    "@types/jsdom": "^21.1.7",
-    "@types/sharp": "^0.31.1",
     "cron": "^3.5.0",
     "dotenv": "^16.4.7",
-    "html-to-image": "^1.11.11",
-    "jimp": "^1.6.0",
-    "jsdom": "^26.0.0",
     "node-fetch": "^3.3.2",
-    "onoff": "^6.0.3",
     "puppeteer": "^24.1.1",
     "puppeteer-core": "^24.1.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "remove-markdown": "^0.6.0",
     "rss-parser": "^3.13.0",
-    "sharp": "^0.33.5",
-    "spi-device": "^3.1.2",
-    "strip-markdown": "^6.0.0",
-    "tailwindinline": "^0.3.7",
     "tsx": "^4.19.2",
-    "tw-to-css": "^0.0.12",
-    "typescript": "^5.7.3",
     "uuid": "^11.0.5"
   }
 }
