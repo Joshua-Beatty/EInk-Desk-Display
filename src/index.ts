@@ -1,6 +1,8 @@
 import EPDController from "./epdController";
 import fs from "fs";
 import "dotenv/config";
+import takeScreenshot from "./screenshot";
+import { CronJob } from 'cron';
 
 async function main() {
   const epd = new EPDController();
@@ -8,58 +10,33 @@ async function main() {
     fs.mkdirSync("./output");
   } catch (e) {}
 
-  try {
-    await epd.clear();
-    console.log("Display cleared");
+  console.log("Drawing initial Frame")
+  await updateScreen(epd, false)
 
-    const output = "./output/output.png";
-    await takeScreenshot(output);
+  new CronJob(
+    '* * * * *', // cronTime
+    function () {
+      const now = new Date()
+      //Do a full refresh every 2 hours at minute 0
+      const partialRefresh = !(now.getHours() % 2 == 0 && now.getMinutes() == 0)
+      updateScreen(epd, partialRefresh)
+    }, // onTick
+    null, // onComplete
+    true, // start
+    'America/Denver' // timeZone
+  );
+}
+
+async function updateScreen(epd: EPDController, partial= true) {
+  const output = "./output/output.png";
+  await takeScreenshot(output);
+  if(partial){
+    console.log("Initiating Partial Draw")
+    await epd.drawPartial(output, 0, 0, 800, 480);
+  } else {
     await epd.draw(output);
-    console.log("Full image drawn");
-
-    while (true) {
-      await waitUntilNextMinute();
-      const output = "./output/output.png";
-      await takeScreenshot(output);
-      await epd.drawPartial(output, 0, 0, 800, 480);
-      await epd.sleep();
-    }
-  } catch (error) {
-    console.error("Command failed:", error);
-  } finally {
-    epd.destroy();
   }
+  await epd.sleep();
 }
 
 main();
-function waitUntilNextMinute() {
-  const now = new Date();
-  const secondsToWait = 60 - now.getSeconds();
-  return new Promise((resolve) => setTimeout(resolve, secondsToWait * 1000));
-}
-
-let puppeteer;
-import puppeteerMain from "puppeteer";
-import puppeteerCore from "puppeteer-core";
-if (process.platform.includes("win")) {
-  puppeteer = puppeteerMain;
-} else {
-  puppeteer = puppeteerCore;
-}
-import getHtml from "./main";
-
-async function takeScreenshot(outputPath: string) {
-  const browser = await puppeteer.launch(
-    process.platform.includes("win")
-      ? {}
-      : { executablePath: "/usr/bin/chromium-browser" }
-  );
-  const page = await browser.newPage();
-  await page.setViewport({ width: 800, height: 480 });
-  const html = await getHtml();
-  await page.setContent(html);
-  const screenshot = await page.screenshot({});
-  fs.writeFileSync(outputPath, screenshot);
-  fs.writeFileSync("./output/index.html", html);
-  browser.close();
-}

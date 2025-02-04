@@ -11,6 +11,7 @@
     "@thi.ng/pixel-dither": "^1.1.155",
     "@types/jsdom": "^21.1.7",
     "@types/sharp": "^0.31.1",
+    "cron": "^3.5.0",
     "dotenv": "^16.4.7",
     "html-to-image": "^1.11.11",
     "jimp": "^1.6.0",
