@@ -1,12 +1,12 @@
 
 import puppeteerMain from "puppeteer";
-import puppeteerCore from "puppeteer-core";
+import puppeteerCore, { PuppeteerNode } from "puppeteer-core";
 import getHtml from "./ui/Render";
 import fs from "fs";
 
-let puppeteer;
+let puppeteer: PuppeteerNode;
 if (process.platform.includes("win")) {
-  puppeteer = puppeteerMain;
+  puppeteer = puppeteerMain as any;
 } else {
   puppeteer = puppeteerCore;
 }

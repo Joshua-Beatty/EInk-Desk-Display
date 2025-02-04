@@ -1,8 +1,8 @@
 
 import Parser from "rss-parser";
-import fetch from "node-fetch";
 import weatherCodes from "../lib/weatherCodes";
-import React, { renderToString } from "react-dom/server";
+import { renderToString } from "react-dom/server";
+import React from "react";
 import Main from "./Main";
 
 let rssParser = new Parser();
