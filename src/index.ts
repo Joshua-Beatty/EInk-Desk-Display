@@ -10,6 +10,7 @@ async function main() {
     fs.mkdirSync("./output");
   } catch (e) {}
 
+  await epd.clear()
   console.log("Drawing initial Frame")
   await updateScreen(epd, false)
 
