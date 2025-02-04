@@ -25,7 +25,7 @@ function Main(data: data) {
   let day = currDate.toLocaleString("en-US", dateOptions);
   let time = currDate.toLocaleString("en-US", timeOptions);
   return (
-    <div className="bg-white w-screen h-screen p-2 gap-2 flex flex-row antialiased">
+    <div className="bg-white w-screen h-screen p-0 gap-2 flex flex-row antialiased">
       <div className="gap-2 flex flex-col w-[40%] justify-center items-center">
         <Card className="justify-center items-center">
           <div className="text-5xl font-bold text-neutral-700">{day}</div>
