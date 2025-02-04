@@ -9,7 +9,7 @@ let rssParser = new Parser();
 const removeMd = require("remove-markdown");
 
 async function getHtml() {
-
+    console.log("fetch", 1)
   //Word of the day
   const feed = await rssParser.parseURL(
     "https://www.merriam-webster.com/wotd/feed/rss2"
@@ -18,6 +18,7 @@ async function getHtml() {
   const definition = removeMd(/is:.+?\n(.+?)\n/.exec(wotd.itunes.summary)![1]);
   const partOfSpeech = /\\ (.+?)  \n/.exec(wotd.itunes.summary)![1];
   const wotdData = { definition, part: partOfSpeech, word: wotd.title || "" };
+  console.log("fetch", 2)
 
   //weather
   const response = await fetch(
@@ -26,6 +27,7 @@ async function getHtml() {
   const weatherJSON: any = await response.json();
   console.log(weatherJSON);
 
+  console.log("fetch", 3)
   //todoist
   const taskResponse = await fetch("https://api.todoist.com/rest/v2/tasks", {
     headers: { Authorization: `Bearer ${process.env.TODOIST_API_KEY}` },
