@@ -9,7 +9,6 @@ let rssParser = new Parser();
 const removeMd = require("remove-markdown");
 
 async function getHtml() {
-    console.log("fetch", 1)
   //Word of the day
   const feed = await rssParser.parseURL(
     "https://www.merriam-webster.com/wotd/feed/rss2"
@@ -18,17 +17,13 @@ async function getHtml() {
   const definition = removeMd(/is:.+?\n(.+?)\n/.exec(wotd.itunes.summary)![1]);
   const partOfSpeech = /\\ (.+?)  \n/.exec(wotd.itunes.summary)![1];
   const wotdData = { definition, part: partOfSpeech, word: wotd.title || "" };
-  console.log("fetch", 2)
 
   const url = `https://api.open-meteo.com/v1/forecast?latitude=${process.env.LAT}&longitude=${process.env.LONG}&current=temperature_2m,apparent_temperature&daily=precipitation_probability_max,weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,precipitation_sum&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=America%2FDenver&forecast_days=1`
-  
-  console.log(url)
   //weather
   const response = await fetch(url);
   const weatherJSON: any = await response.json();
   console.log(weatherJSON);
 
-  console.log("fetch", 3)
   //todoist
   const taskResponse = await fetch("https://api.todoist.com/rest/v2/tasks", {
     headers: { Authorization: `Bearer ${process.env.TODOIST_API_KEY}` },
