@@ -22,6 +22,8 @@ async function takeScreenshot(outputPath: string) {
   await page.setViewport({ width: 800, height: 480 });
   console.log(3)
   const html = await getHtml();
+  console.log(4)
+  console.log(html)
   await page.setContent(html);
   console.log(5)
   const screenshot = await page.screenshot({});
