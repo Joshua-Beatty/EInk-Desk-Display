@@ -22,6 +22,7 @@ async function getHtml() {
 
   const url = `https://api.open-meteo.com/v1/forecast?latitude=${process.env.LAT}&longitude=${process.env.LONG}&current=temperature_2m,apparent_temperature&daily=precipitation_probability_max,weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,precipitation_sum&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=America%2FDenver&forecast_days=1`
   
+  console.log(url)
   //weather
   const response = await fetch(url);
   const weatherJSON: any = await response.json();

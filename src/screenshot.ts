@@ -11,6 +11,7 @@ if (process.platform.includes("win")) {
   puppeteer = puppeteerCore;
 }
 async function takeScreenshot(outputPath: string) {
+    const html = await getHtml();
     console.log(1)
   const browser = await puppeteer.launch(
     process.platform.includes("win")
@@ -21,7 +22,6 @@ async function takeScreenshot(outputPath: string) {
   const page = await browser.newPage();
   await page.setViewport({ width: 800, height: 480 });
   console.log(3)
-  const html = await getHtml();
   console.log(4)
   console.log(html)
   await page.setContent(html);

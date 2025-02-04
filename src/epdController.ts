@@ -25,7 +25,6 @@ class EPDController {
 
     this.process.stdout?.on("data", (data: Buffer) => {
       const responses = data.toString().trim().split("\n");
-      console.log(data)
       responses.forEach((response) => this.handleResponse(response));
     });
 
