@@ -16,13 +16,9 @@ sudo apt-get install python3-numpy
 sudo pip3 install spidev
 ```
 
-Install Node
-```bash
-sudo apt install npm
-sudo apt install nodejs
-```
-
-Puppeteer Deps:
+Install Puppeteer Deps:
 ```bash
 sudo apt install chromium-browser chromium-codecs-ffmpeg
 ```
+
+Install Node 20+

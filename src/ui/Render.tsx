@@ -3,7 +3,7 @@ import Parser from "rss-parser";
 import fetch from "node-fetch";
 import weatherCodes from "../lib/weatherCodes";
 import React, { renderToString } from "react-dom/server";
-import Main from "./main";
+import Main from "./Main";
 
 let rssParser = new Parser();
 const removeMd = require("remove-markdown");
