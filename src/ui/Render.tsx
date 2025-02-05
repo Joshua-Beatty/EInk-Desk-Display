@@ -11,12 +11,18 @@ let lastTaskData: tasksData;
 let lastWeatherData: weatherData;
 let lastWotdData: wotdData;
 async function getHtml() {
+  const now = new Date()
+  const UTCHours =  now.getUTCHours()
+  let feedIndex = 0
+  if(UTCHours == 5 || UTCHours == 6){
+    feedIndex = 1
+  }
   try {
     //Word of the day
     const feed = await rssParser.parseURL(
       "https://www.merriam-webster.com/wotd/feed/rss2"
     );
-    const wotd = feed.items[0];
+    const wotd = feed.items[feedIndex];
     const definition = removeMd(
       /is:.+?\n(.+?)\n/.exec(wotd.itunes.summary)![1]
     );
@@ -51,11 +57,11 @@ async function getHtml() {
     const taskResponse = await fetch("https://api.todoist.com/rest/v2/tasks", {
       headers: { Authorization: `Bearer ${process.env.TODOIST_API_KEY}` },
     });
+    const taskData: any = (await taskResponse.text());
     try {
-      const taskData: any = (await taskResponse.json()) || [];
-      lastTaskData = taskData;
+      lastTaskData = JSON.parse(taskData) || [];
     } catch (e) {
-      console.error(await taskResponse.text());
+      console.error(taskData);
       console.error(e);
     }
   } catch (e) {

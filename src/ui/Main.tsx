@@ -30,7 +30,7 @@ function Main(data: data) {
     <div className="bg-white w-screen h-screen p-0 gap-2 flex flex-row antialiased">
       <div className="gap-2 flex flex-col w-[40%] justify-center items-center">
         <Card className="justify-center items-center">
-          <div className="text-5xl font-bold text-neutral-700">{day}</div>
+          <div className="text-4xl font-bold text-neutral-700">{day}</div>
           <div className="text-6xl font-bold">{time}</div>
         </Card>
         <Card className="items-center h-full">
@@ -39,7 +39,7 @@ function Main(data: data) {
               {data.weather.weatherCodes.text} {data.weather.temp}°F
             </h1>
             <div>
-              <span className="text-lg pl-4">
+              <span className="text-2xl pl-4">
                 {data.weather.maxTemp}°/{data.weather.minTemp}°{" "}
                 {data.weather.precipitation}%
               </span>
@@ -53,20 +53,21 @@ function Main(data: data) {
       </div>
       <div className="w-[60%] h-full flex flex-col gap-2">
         <Card className="min-h-[35%]">
-          <div className="text-3xl font-bold pb-2">
+          <div className="text-5xl font-bold pb-2">
             {data.wotd.word}{" "}
-            <span className="text-lg font-semibold italic">
+            <span className="text-2xl font-semibold italic">
               {data.wotd.part}
             </span>
           </div>
           <hr className="" />
-          <div className="text-lg font-semibold pt-2">
+          <div className="text-2xl font-semibold pt-2">
             <div>{data.wotd.definition}</div>
           </div>
         </Card>
-        <Card className="h-full">
+        <Card className="grow">
           <div className="text-4xl font-bold pb-2">Tasks</div>
-          <div className="text-2xl">
+          <hr className="" />
+          <div className="text-2xl font-semibold pt-2">
             <ul>
               {data.tasks.map((x) => (
                 <li key={x.id}>
