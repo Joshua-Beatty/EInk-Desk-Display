@@ -61,7 +61,7 @@ async function getHtml() {
     try {
       lastTaskData = JSON.parse(taskData) || [];
     } catch (e) {
-      console.error(taskData);
+      console.error(JSON.stringify({taskData: taskData}));
       console.error(e);
     }
   } catch (e) {
