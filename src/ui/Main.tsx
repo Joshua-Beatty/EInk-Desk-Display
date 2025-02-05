@@ -12,7 +12,9 @@ type data = {
   };
   tasks: any[];
 };
-
+type wotdData = data["wotd"]
+type weatherData = data["weather"]
+type tasksData = data["tasks"]
 function Main(data: data) {
   const currDate = new Date();
   const dateOptions = { month: "long", day: "numeric" } as const;
@@ -83,4 +85,4 @@ function Main(data: data) {
   );
 }
 export default Main;
-export type { data };
+export type { data, weatherData, tasksData, wotdData };

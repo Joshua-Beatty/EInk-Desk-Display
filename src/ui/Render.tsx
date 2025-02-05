@@ -1,45 +1,66 @@
-
 import Parser from "rss-parser";
 import weatherCodes from "../lib/weatherCodes";
 import { renderToString } from "react-dom/server";
 import React from "react";
-import Main from "./Main";
+import Main, { tasksData, weatherData, wotdData } from "./Main";
 
 let rssParser = new Parser();
 const removeMd = require("remove-markdown");
 
+let lastTaskData: tasksData;
+let lastWeatherData: weatherData;
+let lastWotdData: wotdData;
 async function getHtml() {
-  //Word of the day
-  const feed = await rssParser.parseURL(
-    "https://www.merriam-webster.com/wotd/feed/rss2"
-  );
-  const wotd = feed.items[0];
-  const definition = removeMd(/is:.+?\n(.+?)\n/.exec(wotd.itunes.summary)![1]);
-  const partOfSpeech = /\\ (.+?)  \n/.exec(wotd.itunes.summary)![1];
-  const wotdData = { definition, part: partOfSpeech, word: wotd.title || "" };
+  try {
+    //Word of the day
+    const feed = await rssParser.parseURL(
+      "https://www.merriam-webster.com/wotd/feed/rss2"
+    );
+    const wotd = feed.items[0];
+    const definition = removeMd(
+      /is:.+?\n(.+?)\n/.exec(wotd.itunes.summary)![1]
+    );
+    const partOfSpeech = /\\ (.+?)  \n/.exec(wotd.itunes.summary)![1];
+    const wotdData = { definition, part: partOfSpeech, word: wotd.title || "" };
+    lastWotdData = wotdData;
+  } catch (e) {
+    console.error(e);
+  }
+  try {
+    //weather
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${process.env.LAT}&longitude=${process.env.LONG}&current=temperature_2m,apparent_temperature&daily=precipitation_probability_max,weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,precipitation_sum&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=America%2FDenver&forecast_days=1`;
+    const response = await fetch(url);
+    const weatherJSON: any = await response.json();
 
-  const url = `https://api.open-meteo.com/v1/forecast?latitude=${process.env.LAT}&longitude=${process.env.LONG}&current=temperature_2m,apparent_temperature&daily=precipitation_probability_max,weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset,precipitation_sum&temperature_unit=fahrenheit&wind_speed_unit=mph&precipitation_unit=inch&timezone=America%2FDenver&forecast_days=1`
-  //weather
-  const response = await fetch(url);
-  const weatherJSON: any = await response.json();
-  console.log(weatherJSON);
+    const weatherData = {
+      minTemp: Math.round(weatherJSON.daily.temperature_2m_min[0]),
+      maxTemp: Math.round(weatherJSON.daily.temperature_2m_max[0]),
+      weatherCodes: weatherCodes[weatherJSON.daily.weather_code[0]],
+      temp: Math.round(weatherJSON.current.temperature_2m),
+      precipitation: Math.round(
+        weatherJSON.daily.precipitation_probability_max[0]
+      ),
+    };
+    lastWeatherData = weatherData;
+  } catch (e) {
+    console.error(e);
+  }
 
-  //todoist
-  const taskResponse = await fetch("https://api.todoist.com/rest/v2/tasks", {
-    headers: { Authorization: `Bearer ${process.env.TODOIST_API_KEY}` },
-  });
-  const taskData: any = (await taskResponse.json()) || [];
-
-  const weatherData = {
-    minTemp: Math.round(weatherJSON.daily.temperature_2m_min[0]),
-    maxTemp: Math.round(weatherJSON.daily.temperature_2m_max[0]),
-    weatherCodes: weatherCodes[weatherJSON.daily.weather_code[0]],
-    temp: Math.round(weatherJSON.current.temperature_2m),
-    precipitation: Math.round(
-      weatherJSON.daily.precipitation_probability_max[0]
-    ),
-  };
-  console.log(weatherData);
+  try {
+    //todoist
+    const taskResponse = await fetch("https://api.todoist.com/rest/v2/tasks", {
+      headers: { Authorization: `Bearer ${process.env.TODOIST_API_KEY}` },
+    });
+    try {
+      const taskData: any = (await taskResponse.json()) || [];
+      lastTaskData = taskData;
+    } catch (e) {
+      console.error(await taskResponse.text());
+      console.error(e);
+    }
+  } catch (e) {
+    console.error(e);
+  }
 
   return `<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -52,6 +73,8 @@ async function getHtml() {
   .noto {
   font-family: "Noto Emoji", serif;
   font-optical-sizing: auto;
-}</style>${renderToString(<Main wotd={wotdData} weather={weatherData} tasks={taskData} />)}`;
+}</style>${renderToString(
+    <Main wotd={lastWotdData} weather={lastWeatherData} tasks={lastTaskData} />
+  )}`;
 }
 export default getHtml;
