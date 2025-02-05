@@ -32,7 +32,6 @@ async function updateScreen(epd: EPDController, partial= true) {
   const output = "./output/output.png";
   await takeScreenshot(output);
   if(partial){
-    console.log("Initiating Partial Draw")
     await epd.drawPartial(output, 0, 0, 800, 480);
   } else {
     await epd.draw(output);
