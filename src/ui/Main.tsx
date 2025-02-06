@@ -74,7 +74,7 @@ function Main(data: data) {
                   <div className="flex flex-row justify-start items-center gap-2">
                     <div className="w-2.5 h-2.5 border-black border-1" />
                     {x.content}
-                    {x.due ? ` - ${x.due.string}` : ""}
+                    {/* {x.due ? ` - ${x.due.string}` : ""} */}
                   </div>
                 </li>
               ))}
