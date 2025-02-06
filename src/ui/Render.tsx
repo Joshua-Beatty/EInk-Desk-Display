@@ -54,7 +54,7 @@ async function getHtml() {
 
   try {
     //todoist
-    const taskResponse = await fetch("https://api.todoist.com/rest/v2/tasks", {
+    const taskResponse = await fetch("https://api.todoist.com/rest/v2/tasks?filter=today | overdue | no date", {
       headers: { Authorization: `Bearer ${process.env.TODOIST_API_KEY}` },
     });
     const taskData: any = (await taskResponse.text());
