@@ -16,11 +16,15 @@ async function main() {
 
   new CronJob(
     '* * * * *', // cronTime
-    function () {
-      const now = new Date()
-      //Do a full refresh every 2 hours at minute 0
-      const partialRefresh = !(now.getHours() % 2 == 0 && now.getMinutes() == 0)
-      updateScreen(epd, partialRefresh)
+    async function () {
+      try {
+        const now = new Date()
+        //Do a full refresh every 2 hours at minute 0
+        const partialRefresh = !(now.getHours() % 2 == 0 && now.getMinutes() == 0)
+        await updateScreen(epd, partialRefresh)
+      } catch(e){
+        console.error(e)
+      }
     }, // onTick
     null, // onComplete
     true, // start
